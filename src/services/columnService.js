@@ -1,13 +1,14 @@
 import { columnModel } from '~/models/columnModel'
+import { boardModel } from '~/models/boardModel'
 
 const createNew = async (reqBody) => {
-  // eslint-disable-next-line no-useless-catch
   try {
-    const newColumn = {
-      ...reqBody
-    }
-    const createdColumn = await columnModel.createNew(newColumn)
+    const createdColumn = await columnModel.createNew({ ...reqBody })
     const getNewColumn = await columnModel.findOneById(createdColumn.insertedId)
+    if (getNewColumn) {
+      await boardModel.pushColumnOrderIds(getNewColumn)
+    }
+
     return getNewColumn
   } catch (error) { throw error }
 }
