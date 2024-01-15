@@ -95,6 +95,11 @@ const update = async (id, boardData) => {
       }
     })
 
+    // transform string to ObjectId in mongodb
+    if (boardData.columnOrderIds) {
+      boardData.columnOrderIds = boardData.columnOrderIds.map(_id => new ObjectId(_id))
+    }
+
     const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
       { _id: new ObjectId(id) },
       { $set: boardData },

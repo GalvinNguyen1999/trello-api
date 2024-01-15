@@ -17,6 +17,8 @@ const CARD_COLLECTION_SCHEMA = Joi.object({
   _destroy: Joi.boolean().default(false)
 })
 
+const INVALID_UPDATE_FIELDS = ['_id', 'createdAt', 'boardId']
+
 const validateBeforeCreate = async (data) => {
   return await CARD_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
 }
@@ -40,9 +42,30 @@ const findOneById = async (id) => {
   } catch (error) { throw new Error(error)}
 }
 
+const update = async (id, cardData) => {
+  try {
+    Object.keys(cardData).forEach(field => {
+      if (INVALID_UPDATE_FIELDS.includes(field)) {
+        delete cardData[field]
+      }
+    })
+
+    // transform string to ObjectId in mongodb
+    if (cardData.columnId) cardData.columnId = new ObjectId(cardData.columnId)
+
+    const result = await GET_DB().collection(CARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: cardData },
+      { returnDocument: 'after' }
+    )
+    return result
+  } catch (error) { throw new Error(error)}
+}
+
 export const cardModel = {
   CARD_COLLECTION_NAME,
   CARD_COLLECTION_SCHEMA,
   createNew,
-  findOneById
+  findOneById,
+  update
 }
