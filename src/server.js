@@ -19,9 +19,17 @@ const START_SEVER = () => {
 
   app.use(errorHandlingMiddleware)
 
-  app.listen(env.APP_PORT, env.APP_HOST, () => {
-    console.log(`Hello ${env.AUTHOR}, Back-end Sever is running successfully at Host: ${env.APP_HOST} and Port :${env.APP_PORT}`)
-  })
+  if (env.BUILD_MODE === 'production') {
+    // For production
+    app.listen(process.env.PORT, () => {
+      console.log(`Hello ${env.AUTHOR}, Back-end Sever is running successfully at Port :${process.env.PORT}`)
+    })
+  } else {
+    // For development
+    app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
+      console.log(`Hello ${env.AUTHOR}, Back-end Sever is running successfully at Host: ${env.LOCAL_DEV_APP_HOST} and Port :${env.LOCAL_DEV_APP_PORT}`)
+    })
+  }
 
   exitHook(() => {
     CLOSE_DB()
