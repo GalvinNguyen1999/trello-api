@@ -66,6 +66,11 @@ const update = async (id, columnData) => {
       }
     })
 
+    // transform string to ObjectId in mongodb
+    if (columnData.cardOrderIds) {
+      columnData.cardOrderIds = columnData.cardOrderIds.map(_id => new ObjectId(_id))
+    }
+
     const result = await GET_DB().collection(COLUMN_COLLECTION_NAME).findOneAndUpdate(
       { _id: new ObjectId(id) },
       { $set: columnData },
