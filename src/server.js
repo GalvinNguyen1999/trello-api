@@ -3,7 +3,7 @@ import express from 'express'
 import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
 import exitHook from 'async-exit-hook'
 import cors from 'cors'
-import { corsOptions } from '~/config/cors'
+// import { corsOptions } from '~/config/cors'
 import { env } from '~/config/environment.js'
 import { APIs_V1 } from '~/routes/v1/index.js'
 import { errorHandlingMiddleware } from '~/middlewares/errorHandlingMiddleware'
@@ -14,7 +14,7 @@ const START_SEVER = () => {
 
   app.use(express.json())
 
-  app.use(cors(corsOptions))
+  app.use(cors())
 
   app.use('/v1', APIs_V1)
 
