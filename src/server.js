@@ -21,7 +21,7 @@ const START_SEVER = () => {
   app.use('/v1', APIs_V1)
 
   /* APIs Test Zalo */
-  app.get('/zalo_verifierGeQKTCU59bKGbF83s-D-8LxnyI6oXo1wDJan.html', (req, res) => {
+  app.get('/zalo_verifierJU-uCfEQE6bkafr6f8GzNdsGwGQHvZXTDp0q.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'src/test.html'))
   });
 
