@@ -7,7 +7,9 @@ import cors from 'cors'
 import { env } from '~/config/environment.js'
 import { APIs_V1 } from '~/routes/v1/index.js'
 import { errorHandlingMiddleware } from '~/middlewares/errorHandlingMiddleware'
-import { dirname, resolve, join } from 'path'
+
+const path = require('path')
+const __dirname = path.resolve()
 
 const START_SEVER = () => {
   const app = express()
@@ -20,8 +22,8 @@ const START_SEVER = () => {
 
   /* APIs Test Zalo */
   app.get('/zalo_verifierGeQKTCU59bKGbF83s-D-8LxnyI6oXo1wDJan.html', (req, res) => {
-    res.sendFile(join(dirname(resolve()), 'trello-api', 'src', 'test.html'))
-  })
+    res.sendFile(path.join(__dirname, 'src/test.html'))
+  });
 
   app.use(errorHandlingMiddleware)
 
