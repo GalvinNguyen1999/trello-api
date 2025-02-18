@@ -20,7 +20,7 @@ const START_SEVER = () => {
 
   /* APIs Test Zalo */
   app.get('/zalo_verifierGeQKTCU59bKGbF83s-D-8LxnyI6oXo1wDJan.html', (req, res) => {
-    res.sendFile(join(dirname(resolve()), 'trello-api', 'src', 'test.html'))
+    res.sendFile(join(dirname(resolve()), 'otp', 'render', 'project', 'trello-api', 'src', 'test.html'))
   })
 
   app.use(errorHandlingMiddleware)
