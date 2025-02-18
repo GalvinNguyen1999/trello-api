@@ -19,4 +19,9 @@ Router.use('/columns', columnRoute)
 /* APIs Card */
 Router.use('/cards', cardRoute)
 
+/* APIs Zalo Test */
+Router.use('/zalo', (req, res) => {
+  res.status(StatusCodes.OK).json({ message: 'Successfully' })
+})
+
 export const APIs_V1 = Router
