@@ -26,7 +26,7 @@ Router.use('/zalo', async (req, res) => {
   const { event_name, recipient } = req.body
   console.log('🚀 ~ Router.use ~ req.body:', req.body)
 
-  if (event_name == 'oa_send_text') {
+  if (event_name == 'user_received_message') {
     try {
       await axios.post(
         'https://openapi.zalo.me/v3.0/oa/message/cs',
