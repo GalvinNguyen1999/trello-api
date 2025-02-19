@@ -25,30 +25,31 @@ Router.use('/cards', cardRoute)
 Router.use('/zalo', async (req, res) => {
   const { event_name, recipient } = req.body
   console.log('🚀 ~ Router.use ~ req.body:', req.body)
+  console.log('🚀 ~ Router.use ~ req.query:', req?.query)
 
-  if (event_name == 'user_received_message') {
-    try {
-      await axios.post(
-        'https://openapi.zalo.me/v3.0/oa/message/cs',
-        {
-          recipient: {
-            user_id: recipient?.id
-          },
-          message: {
-            text: '1234'
-          }
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'access_token': process.env.ZALO_OA_ACCESS_TOKEN
-          }
-        }
-      )
-    } catch (error) {
-      console.log('Error: ', error)
-    }
-  }
+  // if (event_name == 'user_received_message') {
+  //   try {
+  //     await axios.post(
+  //       'https://openapi.zalo.me/v3.0/oa/message/cs',
+  //       {
+  //         recipient: {
+  //           user_id: recipient?.id
+  //         },
+  //         message: {
+  //           text: '1234'
+  //         }
+  //       },
+  //       {
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'access_token': process.env.ZALO_OA_ACCESS_TOKEN
+  //         }
+  //       }
+  //     )
+  //   } catch (error) {
+  //     console.log('Error: ', error)
+  //   }
+  // }
   res.status(StatusCodes.OK).json({ message: 'Successfully' })
 })
 
