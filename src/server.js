@@ -3,20 +3,17 @@ import express from 'express'
 import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
 import exitHook from 'async-exit-hook'
 import cors from 'cors'
-// import { corsOptions } from '~/config/cors'
+import { corsOptions } from '~/config/cors'
 import { env } from '~/config/environment.js'
 import { APIs_V1 } from '~/routes/v1/index.js'
 import { errorHandlingMiddleware } from '~/middlewares/errorHandlingMiddleware'
-
-const path = require('path')
-const __dirname = path.resolve()
 
 const START_SEVER = () => {
   const app = express()
 
   app.use(express.json())
 
-  app.use(cors())
+  app.use(cors(corsOptions))
 
   app.use('/v1', APIs_V1)
 

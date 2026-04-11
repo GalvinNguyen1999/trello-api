@@ -1,3 +1,5 @@
+import { pick } from 'lodash'
+
 /**
  * YouTube: TrungQuanDev - Một Lập Trình Viên
  * Created by trungquandev.com's author on Sep 27, 2023
@@ -16,4 +18,9 @@ export const slugify = (val) => {
     .replace(/[^a-z0-9 -]/g, '') // remove non-alphanumeric characters
     .replace(/\s+/g, '-') // replace spaces with hyphens
     .replace(/-+/g, '-') // remove consecutive hyphens
+}
+
+export const pickUser = (user) => {
+  if (!user) return {}
+  return pick(user, ['_id', 'username', 'email', 'displayName', 'avatar', 'role', 'isActive', 'createdAt', 'updatedAt'])
 }
