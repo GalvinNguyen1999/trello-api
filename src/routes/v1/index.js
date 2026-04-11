@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 import { boardRoute } from '~/routes/v1/boardRoute'
 import { columnRoute } from '~/routes/v1/columnRoute'
 import { cardRoute } from '~/routes/v1/cardRoute'
-import axios from 'axios'
+import { userRoute } from '~/routes/v1/userRoute'
 
 const Router = express.Router()
 
@@ -21,36 +21,7 @@ Router.use('/columns', columnRoute)
 /* APIs Card */
 Router.use('/cards', cardRoute)
 
-/* APIs Zalo Test */
-Router.use('/zalo', async (req, res) => {
-  const { event_name, recipient } = req.body
-  console.log('🚀 ~ Router.use ~ req.body:', req.body)
-  console.log('🚀 ~ Router.use ~ req.query:', req?.query)
-
-  // if (event_name == 'user_received_message') {
-  //   try {
-  //     await axios.post(
-  //       'https://openapi.zalo.me/v3.0/oa/message/cs',
-  //       {
-  //         recipient: {
-  //           user_id: recipient?.id
-  //         },
-  //         message: {
-  //           text: '1234'
-  //         }
-  //       },
-  //       {
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'access_token': process.env.ZALO_OA_ACCESS_TOKEN
-  //         }
-  //       }
-  //     )
-  //   } catch (error) {
-  //     console.log('Error: ', error)
-  //   }
-  // }
-  res.status(StatusCodes.OK).json({ message: 'Successfully' })
-})
+/* APIs User */
+Router.use('/users', userRoute)
 
 export const APIs_V1 = Router
