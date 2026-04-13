@@ -88,12 +88,14 @@ const login = async (reqBody) => {
       userInfo,
       env.ACCESS_TOKEN_SECRET_SIGNATURE,
       env.ACCESS_TOKEN_LIFE
+      // 5
     )
     // generate refresh token
     const refreshToken = await JwtProvider.generateToken(
       userInfo,
       env.REFRESH_TOKEN_SECRET_SIGNATUTE,
       env.REFRESH_TOKEN_SECRET_LIFE
+      // 15
     )
 
     // return trả về dữ liệu cho phía controller
@@ -105,8 +107,29 @@ const login = async (reqBody) => {
   } catch (error) { throw error }
 }
 
+const refreshToken = async (clientRefreshToken) => {
+  try {
+    // lay thong tin tu refresh token
+    const refreshDecodedToken = await JwtProvider.verifyToken(clientRefreshToken, env.REFRESH_TOKEN_SECRET_SIGNATUTE)
+
+    // thong tin se dinh kem trong JWT token gom _id va email cua user
+    const userInfo = { _id: refreshDecodedToken._id, email: refreshDecodedToken.email }
+
+    // generate access token
+    const accessToken = await JwtProvider.generateToken(
+      userInfo,
+      env.ACCESS_TOKEN_SECRET_SIGNATURE,
+      // env.ACCESS_TOKEN_LIFE
+      5
+    )
+
+    return { accessToken }
+  } catch (error) { throw error }
+}
+
 export const userService = {
   createNew,
   verifyAccount,
-  login
+  login,
+  refreshToken
 }
