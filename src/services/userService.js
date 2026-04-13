@@ -119,11 +119,38 @@ const refreshToken = async (clientRefreshToken) => {
     const accessToken = await JwtProvider.generateToken(
       userInfo,
       env.ACCESS_TOKEN_SECRET_SIGNATURE,
-      // env.ACCESS_TOKEN_LIFE
-      5
+      env.ACCESS_TOKEN_LIFE
     )
 
     return { accessToken }
+  } catch (error) { throw error }
+}
+
+const update = async (userId, reqBody) => {
+  try {
+    // query user trong database
+    const existUser = await userModel.findOneById(userId)
+    if (!existUser) throw new ApiError(StatusCodes.NOT_FOUND, 'Account not found!')
+    if (!existUser.isActive) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Your account not active!')
+
+    // update user result
+    let updatedUser = {}
+
+    // update password
+    if (reqBody.current_password && reqBody.new_password) {
+      // check password
+      const isMatch = bcryptjs.compareSync(reqBody.current_password, existUser.password)
+      if (!isMatch) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Your current password is not correct!')
+
+      updatedUser = await userModel.update(existUser._id, {
+        password: bcryptjs.hashSync(reqBody.new_password, 8)
+      })
+    } else {
+      // update other fields
+      updatedUser = await userModel.update(existUser._id, reqBody)
+    }
+
+    return pickUser(updatedUser)
   } catch (error) { throw error }
 }
 
@@ -131,5 +158,6 @@ export const userService = {
   createNew,
   verifyAccount,
   login,
-  refreshToken
+  refreshToken,
+  update
 }
