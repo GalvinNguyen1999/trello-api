@@ -20,7 +20,7 @@ const createNew = async (req, res, next) => {
 const verifyAccount = async (req, res, next) => {
   const correctCondition = Joi.object({
     token: Joi.string().required(),
-    email: Joi.string().required().pattern(EMAIL_RULE).message(EMAIL_RULE_MESSAGE),
+    email: Joi.string().required().pattern(EMAIL_RULE).message(EMAIL_RULE_MESSAGE)
   })
 
   try {
