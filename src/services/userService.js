@@ -8,6 +8,7 @@ import { WEBSITE_DOMAIN } from '~/utils/constants'
 import { BrevoProvider } from '~/providers/BrevoProvider'
 import { JwtProvider } from '~/providers/JwtProvider'
 import { env } from '~/config/environment'
+import { CloudinaryProvider } from '~/providers/CloudinaryProvider'
 
 const createNew = async (reqBody) => {
   try {
@@ -126,7 +127,7 @@ const refreshToken = async (clientRefreshToken) => {
   } catch (error) { throw error }
 }
 
-const update = async (userId, reqBody) => {
+const update = async (userId, reqBody, userAvatarFile) => {
   try {
     // query user trong database
     const existUser = await userModel.findOneById(userId)
@@ -145,6 +146,11 @@ const update = async (userId, reqBody) => {
       updatedUser = await userModel.update(existUser._id, {
         password: bcryptjs.hashSync(reqBody.new_password, 8)
       })
+    } else if (userAvatarFile) {
+      // upload file lên cloudinary
+      const uploadResult = await CloudinaryProvider.streamUpload(userAvatarFile.buffer)
+      // update avatar
+      updatedUser = await userModel.update(existUser._id, { avatar: uploadResult.secure_url })
     } else {
       // update other fields
       updatedUser = await userModel.update(existUser._id, reqBody)
