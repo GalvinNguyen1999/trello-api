@@ -31,9 +31,20 @@ const moveCardToDifferentColumn = async (req, res, next) => {
   } catch (error) { next(error) }
 }
 
+const getBoards = async (req, res, next) => {
+  try {
+    const userId = req.jwtDecoded._id
+    // page and itemsPerPage are optional query params, if not provided, default value will be used in service layer
+    const { page, itemsPerPage } = req.query
+    const result = await boardService.getBoards(userId, page, itemsPerPage )
+    res.status(StatusCodes.OK).json(result)
+  } catch (error) { next(error) }
+}
+
 export const boardController = {
   createNew,
   getDetails,
   update,
-  moveCardToDifferentColumn
+  moveCardToDifferentColumn,
+  getBoards
 }
