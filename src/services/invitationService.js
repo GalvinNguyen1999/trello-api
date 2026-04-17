@@ -55,8 +55,46 @@ const getInvitations = async (userId) => {
   } catch (error) { throw error }
 }
 
+/**
+ * Cập nhật trạng thái lời mời
+ * @param {string} invitationId - ID của lời mời
+ * @param {string} userId - ID của người dùng
+ * @param {string} status - Trạng thái lời mời
+ * @returns {Promise<Object>} - Kết quả cập nhật
+ */
+const updateBoardInvitation = async (invitationId, userId, status) => {
+  try {
+    const getInvitation = await invitationModel.findOneById(invitationId)
+    if (!getInvitation) throw new ApiError(StatusCodes.NOT_FOUND, 'Invitation not found')
+
+    const boardId = getInvitation.boardInvitation.boardId
+    const board = await boardModel.findOneById(boardId)
+    if (!board) throw new ApiError(StatusCodes.NOT_FOUND, 'Board not found')
+
+    const boardOwnerAndMemberIds = [...board.ownerIds, ...board.memberIds].toString()
+    if (status === BOARD_INVITATION_STATUS.ACCEPTED && boardOwnerAndMemberIds.includes(userId.toString())) {
+      throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'You are already a member of this board')
+    }
+
+    const updateData = {
+      boardInvitation: {
+        ...getInvitation.boardInvitation,
+        status: status // ACCEPTED or REJECTED
+      }
+    }
+
+    const updatedInvitation = await invitationModel.update(invitationId, updateData)
+
+    if (updatedInvitation.boardInvitation.status === BOARD_INVITATION_STATUS.ACCEPTED) {
+      await boardModel.pushMemberIds(boardId, userId)
+    }
+
+    return updatedInvitation
+  } catch (error) { throw error }
+}
 
 export const invitationService = {
   createNewBoardInvitation,
-  getInvitations
+  getInvitations,
+  updateBoardInvitation
 }

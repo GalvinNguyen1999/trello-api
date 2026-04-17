@@ -17,7 +17,26 @@ const getInvitations = async (req, res, next) => {
   } catch (error) { next(error) }
 }
 
+/**
+ * Cập nhật trạng thái lời mời
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ * @param {Function} next - Next function
+ * @returns {Promise<Object>} - Kết quả cập nhật
+ */
+const updateBoardInvitation = async (req, res, next) => {
+  try {
+    const userId = req.jwtDecoded._id
+    const { invitationId } = req.params
+    const { status } = req.body
+
+    const updatedInvitation = await invitationService.updateBoardInvitation(invitationId, userId, status)
+    res.status(StatusCodes.OK).json(updatedInvitation)
+  } catch (error) { next(error) }
+}
+
 export const invitationController = {
   createNewBoardInvitation,
-  getInvitations
+  getInvitations,
+  updateBoardInvitation
 }
