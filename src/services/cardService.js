@@ -1,6 +1,7 @@
 import { cardModel } from '~/models/cardModel'
 import { columnModel } from '~/models/columnModel'
 import { CloudinaryProvider } from '~/providers/CloudinaryProvider'
+import { CARD_MEMBER_ACTIONS } from '~/utils/constants'
 
 const createNew = async (reqBody) => {
   try {
@@ -38,8 +39,9 @@ const update = async (cardId, reqBody, cardCoverFile, userInfo) => {
       }
       // thêm comment vào đầu danh sách comments của card
       updatedCard = await cardModel.unShiftNewComment(cardId, commentData)
-    }
-    else {
+    } else if (updateData.incomingMemberInfo) {
+      updatedCard = await cardModel.updateMembers(cardId, updateData.incomingMemberInfo)
+    } else {
       updatedCard = await cardModel.update(cardId, updateData)
     }
     return updatedCard
