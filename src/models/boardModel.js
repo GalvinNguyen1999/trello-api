@@ -165,7 +165,7 @@ const pullColumnOrderIds = async (column) => {
   } catch (error) { throw new Error(error) }
 }
 
-const getBoards = async (userId, page, itemsPerPage) => {
+const getBoards = async (userId, page, itemsPerPage, queryFilters) => {
   try {
     const queryConditions = [
       // dieu kien 01: board chua bi xoa
@@ -179,6 +179,13 @@ const getBoards = async (userId, page, itemsPerPage) => {
         ]
       }
     ]
+
+    if (queryFilters) {
+      // $regex: tìm kiếm theo regex, $options: 'i' để tìm kiếm không phân biệt chữ hoa thường
+      Object.keys(queryFilters).forEach(key => {
+        queryConditions.push({ [key]: { $regex: new RegExp(queryFilters[key], 'i') } })
+      })
+    }
 
     const query = await GET_DB()
       .collection(BOARD_COLLECTION_NAME)
