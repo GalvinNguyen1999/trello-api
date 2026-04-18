@@ -7,6 +7,7 @@ import {
 } from '~/utils/validators'
 import { GET_DB } from '~/config/mongodb'
 import { ObjectId } from 'mongodb'
+import { CARD_MEMBER_ACTIONS } from '~/utils/constants'
 
 // Define Collection (name & schema)
 const CARD_COLLECTION_NAME = 'cards'
@@ -81,6 +82,30 @@ const update = async (id, cardData) => {
   } catch (error) { throw new Error(error)}
 }
 
+const updateMembers = async (id, incomingMemberInfo) => {
+  try {
+    let updateCondition = {}
+
+    if (incomingMemberInfo.action === CARD_MEMBER_ACTIONS.ADD) {
+      // $push: thêm phần tử mới vào danh sách
+      updateCondition = { $push: { memberIds: new ObjectId(incomingMemberInfo.userId) } }
+    }
+
+    if (incomingMemberInfo.action === CARD_MEMBER_ACTIONS.REMOVE) {
+      // $pull: xóa phần tử khỏi danh sách
+      updateCondition = { $pull: { memberIds: new ObjectId(incomingMemberInfo.userId) } }
+    }
+
+    const result = await GET_DB().collection(CARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      updateCondition,
+      { returnDocument: 'after' }
+    )
+
+    return result
+  } catch (error) { throw new Error(error) }
+}
+
 const unShiftNewComment = async (id, commentData) => {
   try {
     const result = await GET_DB().collection(CARD_COLLECTION_NAME).findOneAndUpdate(
@@ -113,5 +138,6 @@ export const cardModel = {
   findOneById,
   update,
   deleteManyById,
-  unShiftNewComment
+  unShiftNewComment,
+  updateMembers
 }
